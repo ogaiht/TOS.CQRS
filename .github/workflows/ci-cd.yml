@@ -9,7 +9,9 @@ on:
 
 env:
   SOLUTION: TOS.CQRS.sln
-  NUGET_SOURCE: https://nuget.pkg.github.com/ogaiht/index.json  
+  NUGET_SOURCE: |
+    https://api.nuget.org/v3/index.json
+    https://nuget.pkg.github.com/ogaiht/index.json 
 
 jobs:
   build:
