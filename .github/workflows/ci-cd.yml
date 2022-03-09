@@ -10,6 +10,7 @@ on:
 env:
   SOLUTION: TOS.CQRS.sln
   NUGET_SOURCE: https://nuget.pkg.github.com/ogaiht/index.json
+  OWNER: ogaiht
 
 jobs:
   build:
@@ -43,6 +44,9 @@ jobs:
         
     - name: Print VERSION
       run: echo "VERSION - $VERSION"
+      
+    - name: Authenticate to GitHub Packages
+      run: dotnet nuget add source --username $OWNER --password ${{ secrets.PACKAGE_CONSUMER_TOKEN }} --store-password-in-clear-text --name github $NUGET_SOURCE
       
     - name: Restore dependencies
       run: dotnet restore
