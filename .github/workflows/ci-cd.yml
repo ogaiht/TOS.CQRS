@@ -45,8 +45,8 @@ jobs:
     - name: Print VERSION
       run: echo "VERSION - $VERSION"
       
-    - name: Authenticate to GitHub Packages
-      run: dotnet nuget add source --username $OWNER --password ${{ secrets.PACKAGE_CONSUMER_TOKEN }} --store-password-in-clear-text --name github $NUGET_SOURCE
+#    - name: Authenticate to GitHub Packages
+#      run: dotnet nuget add source --username $OWNER --password ${{ secrets.PACKAGE_CONSUMER_TOKEN }} --store-password-in-clear-text --name github $NUGET_SOURCE
       
     - name: Restore dependencies
       run: dotnet restore
