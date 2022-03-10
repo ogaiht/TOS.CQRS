@@ -9,9 +9,8 @@ on:
 
 env:
   SOLUTION: TOS.CQRS.sln
-  NUGET_SOURCE: |
-    https://api.nuget.org/v3/index.json
-    https://nuget.pkg.github.com/ogaiht/index.json 
+  NUGET_SOURCE: https://nuget.pkg.github.com/ogaiht/index.json 
+  DOTNET_VERSION: 5.0.X
 
 jobs:
   build:
@@ -26,10 +25,20 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.x
-        source-url: $NUGET_SOURCE
-      env:
-        NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        dotnet-version: $DOTNET_VERSION
+#        source-url: $NUGET_SOURCE
+#      env:
+#        NUGET_AUTH_TOKEN: ${{secrets.PACKAGE_CONSUMER_TOKEN}}
+    
+#    - name: Cache dependencies
+#      uses: actions/cache@v2
+#      with:
+#        path: ~/.nuget/packages        
+#        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+#        restore-keys: ${{ runner.os }}-nuget
+    
+    - name: Restore dependencies
+      run: dotnet restore
     
     - name: Install GitVersion
       uses: gittools/actions/gitversion/setup@v0.9.11
@@ -47,10 +56,7 @@ jobs:
         echo "SHORT_VERSION=$(echo ${{ steps.gitversion.outputs.semVer }})" >> $GITHUB_ENV
         
     - name: Print VERSION
-      run: echo "VERSION - $VERSION"      
-
-    - name: Restore dependencies
-      run: dotnet restore
+      run: echo "VERSION - $VERSION"         
       
     - name: Build
       run: dotnet build $SOLUTION --no-restore /property:Configuration=Release /property:Version=$SHORT_VERSION
