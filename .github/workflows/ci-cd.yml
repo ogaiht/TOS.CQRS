@@ -10,7 +10,6 @@ on:
 env:
   SOLUTION: TOS.CQRS.sln
   NUGET_SOURCE: https://nuget.pkg.github.com/ogaiht/index.json 
-  DOTNET_VERSION: '5.0.x'
 
 jobs:
   build:
@@ -25,7 +24,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: $DOTNET_VERSION
+        dotnet-version: 5.0.x
 #        source-url: $NUGET_SOURCE
 #      env:
 #        NUGET_AUTH_TOKEN: ${{secrets.PACKAGE_CONSUMER_TOKEN}}
