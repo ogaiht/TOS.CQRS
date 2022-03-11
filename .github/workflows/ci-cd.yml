@@ -43,7 +43,7 @@ jobs:
         dotnet nuget remove source github
     
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore --configfile ${{ github.workspace }}/NuGet.config
     
     - name: Install GitVersion
       uses: gittools/actions/gitversion/setup@v0.9.11
