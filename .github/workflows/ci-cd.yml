@@ -33,6 +33,12 @@ jobs:
 #        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
 #        restore-keys: ${{ runner.os }}-nuget
     
+    - name: Remove previous package
+      if: always()
+      continue-on-error: true
+      run: |
+        dotnet nuget remove source github
+    
     - name: Ensure GitHub Nuget Source
       run: |
         dotnet nuget add source ${{ env.NUGET_URL }} \
