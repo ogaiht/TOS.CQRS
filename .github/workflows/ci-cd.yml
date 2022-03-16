@@ -33,6 +33,13 @@ jobs:
 #        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
 #        restore-keys: ${{ runner.os }}-nuget
     
+    - name: Ensure GitHub Nuget Source
+      run: |
+        dotnet nuget add source ${{ env.NUGET_URL }} \
+          -n github \
+          -u ${{ secrets.PACKAGE_OWNER_NAME }} \
+          -p ${{ secrets.PACKAGE_CONSUMER_TOKEN }} \
+          --store-password-in-clear-text
     
     - name: Install GitVersion
       uses: gittools/actions/gitversion/setup@v0.9.11
@@ -50,15 +57,8 @@ jobs:
         echo "SHORT_VERSION=$(echo ${{ steps.gitversion.outputs.semVer }})" >> $GITHUB_ENV
         
     - name: Print VERSION
-      run: echo "VERSION - $VERSION"         
-    
-    - name: Ensure GitHub Nuget Source
-      run: |
-        dotnet nuget add source ${{ env.NUGET_URL }} \
-          -n github \
-          -u ${{ secrets.PACKAGE_OWNER_NAME }} \
-          -p ${{ secrets.PACKAGE_CONSUMER_TOKEN }} \
-          --store-password-in-clear-text
+      run: echo "VERSION - $VERSION"            
+   
     
     - name: Restore dependencies
       run: dotnet restore
