@@ -25,10 +25,7 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.x
-#        source-url: $NUGET_SOURCE
-#      env:
-#        NUGET_AUTH_TOKEN: ${{secrets.PACKAGE_CONSUMER_TOKEN}}
-    
+
 #    - name: Cache dependencies
 #      uses: actions/cache@v2
 #      with:
@@ -36,14 +33,6 @@ jobs:
 #        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
 #        restore-keys: ${{ runner.os }}-nuget
     
-#    - name: Cleanup
-#      if: always()
-#      continue-on-error: true
-#      run: |
-#        dotnet nuget remove source github
-    
-    - name: Restore dependencies
-      run: dotnet restore --configfile ${{ github.workspace }}/NuGet.config
     
     - name: Install GitVersion
       uses: gittools/actions/gitversion/setup@v0.9.11
@@ -62,7 +51,18 @@ jobs:
         
     - name: Print VERSION
       run: echo "VERSION - $VERSION"         
-      
+    
+    - name: Ensure GitHub Nuget Source
+      run: |
+        dotnet nuget add source ${{ env.NUGET_URL }} \
+          -n github \
+          -u ${{ secrets.PACKAGE_OWNER_NAME }} \
+          -p ${{ secrets.PACKAGE_CONSUMER_TOKEN }} \
+          --store-password-in-clear-text
+    
+    - name: Restore dependencies
+      run: dotnet restore
+    
     - name: Build
       run: dotnet build $SOLUTION --no-restore /property:Configuration=Release /property:Version=$SHORT_VERSION
       
@@ -74,3 +74,9 @@ jobs:
 
     - name: Push Packages
       run: dotnet nuget push ${{ github.workspace }}/out/*.nupkg --skip-duplicate --no-symbols true --source $NUGET_SOURCE --api-key ${{ secrets.PACKAGE_PUBLISHER_TOKEN }}
+
+    - name: Cleanup
+      if: always()
+      continue-on-error: true
+      run: |
+        dotnet nuget remove source github
