@@ -9,7 +9,7 @@ on:
 
 env:
   SOLUTION: TOS.CQRS.sln
-  NUGET_SOURCE: https://nuget.pkg.github.com/ogaiht/index.json 
+  NUGET_URL: https://nuget.pkg.github.com/ogaiht/index.json 
 
 jobs:
   build:
@@ -73,7 +73,7 @@ jobs:
       run: dotnet pack $SOLUTION --no-restore /property:Configuration=Release /property:Version=$SHORT_VERSION  /property:NuGetVersion=$SHORT_VERSION -o out
 
     - name: Push Packages
-      run: dotnet nuget push ${{ github.workspace }}/out/*.nupkg --skip-duplicate --no-symbols true --source $NUGET_SOURCE --api-key ${{ secrets.PACKAGE_PUBLISHER_TOKEN }}
+      run: dotnet nuget push ${{ github.workspace }}/out/*.nupkg --skip-duplicate --no-symbols true --source $NUGET_URL --api-key ${{ secrets.PACKAGE_PUBLISHER_TOKEN }}
 
     - name: Cleanup
       if: always()
